@@ -1,4 +1,4 @@
-#include <subdir/example.h>
+#include <example.h>
 
 std::string subdir_function() {
 	return "This function is inside a subdir";

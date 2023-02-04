@@ -1,17 +1,16 @@
 PROJECT_NAME := example-project
 CC        := g++
-SRCDIR    := src
-HEADERDIR := include
-BUILDDIR  := build
-BINDIR    := bin
+SRCDIR    := Source
+BUILDDIR  := Target/build
+BINDIR    := Target/bin
 TARGET    := $(BINDIR)/$(PROJECT_NAME)
 SOURCES   := $(shell find $(SRCDIR) -type f -name *.c*)
-HEDEARS   := $(shell find $(HEADERDIR) -type f -name *.h*)
+HEDEARS   := $(shell find $(SRCDIR) -type f -name *.h*)
 OBJECTS   := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(addsuffix .o,$(basename $(SOURCES))))
 DEPS      := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(addsuffix .d,$(basename $(SOURCES))))
 CFLAGS    := -Wall -Werror -Wextra
 LIB       :=
-INC       := -I include -I src
+INC		  := $(patsubst %,-I%,$(subst /., ,$(wildcard $(SRCDIR)/*/.)))
 
 all: debug
 debug: CFLAGS += -g
@@ -19,8 +18,8 @@ debug: $(TARGET)
 release: $(TARGET)
 release: CFLAGS += -O3
 
-GREEN=`tput setaf 2`
-RESET=`tput sgr0`
+GREEN=#'tput setaf 2`
+RESET=#`tput sgr0`
 
 define print_green
 	@echo "$(GREEN)$(1)$(RESET)"
@@ -34,7 +33,7 @@ clean:
 $(TARGET): $(BINDIR) $(BUILDDIR) $(OBJECTS)
 	$(call print_green,"Linking object files...")
 	@$(CC) $(OBJECTS) -o $(TARGET) $(LIB)
-	$(call print_green,"$(TARGET) has been created!")
+	$(call print_green,"Finished building target: $(PROJECT_NAME)")
 
 $(BUILDDIR) :
 	mkdir $(BUILDDIR)
@@ -55,5 +54,3 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.c*
 -include $(DEPS)
 
 .PHONY: clean all
-
-
