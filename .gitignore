@@ -4,6 +4,7 @@
 
 # Ignore dependency files
 *.dep
+*.d
 
 # Ignore binary directories
 bin
