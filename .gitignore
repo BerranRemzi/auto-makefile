@@ -6,6 +6,9 @@
 *.dep
 *.d
 
+#
+*.list
+
 # Ignore binary directories
 bin
 build
