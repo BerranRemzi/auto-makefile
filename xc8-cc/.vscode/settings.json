@@ -1,0 +1,8 @@
+{
+    "makefile.configurations": [
+    
+    ],
+    "makefile.makePath": "D:\\portapps\\eclipse\\msys64\\usr\\bin",
+    "makefile.preConfigureScript": "configure.bat",
+    "makefile.alwaysPreConfigure": true
+}
