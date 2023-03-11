@@ -1,5 +1,5 @@
 PROJECT_NAME := PWM_Limiter.X.production
-CC        := "C:\Tools\Microchip\xc8\v2.40\bin\xc8-cc.exe"
+CC        := "C:/Tools/Microchip/xc8/v2.40/bin/xc8-cc.exe"
 DFP       := "C:/Tools/Microchip/MPLABX/v6.00/packs/Microchip/PIC10-12Fxxx_DFP/1.5.61/xc8"
 CPU       := 10F322
 SRCDIR    := src
@@ -10,12 +10,13 @@ SOURCES   := $(shell find $(SRCDIR) -type f \( -name *.c* -o -name *.s \))
 HEDEARS   := $(shell find $(SRCDIR) -type f -name *.h*)
 OBJECTS   := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(addsuffix .p1,$(basename $(SOURCES))))
 DEPS      := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(addsuffix .d,$(basename $(SOURCES))))
-CFLAGS    := -mdfp=$(DFP) -fno-short-double -fno-short-float -O2 -fasmfile -maddrqual=ignore -xassembler-with-cpp 
-FLAGS	  := -mwarn=-3 -Wa,-a -DXPRJ_default=default  -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits   -std=c90 -gdwarf-3 -mstack=compiled:auto:auto
-FLAGS1    := -Wl,-Map=$(BINDIR)/$(PROJECT_NAME).map  -DXPRJ_default=default  -Wl,--defsym=__MPLAB_BUILD=1
-FLAGS2	  := -mwarn=-3 -Wa,-a -msummary=-psect,-class,+mem,-hex,-file  -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits -std=c90 -gdwarf-3 -mstack=compiled:auto:auto      -Wl,--memorysummary,$(BINDIR)/memoryfile.xml
+CFLAGS    := -mdfp=$(DFP) -fno-short-double -fno-short-float -O2 -fasmfile -maddrqual=ignore -xassembler-with-cpp
+FLAGS	  := -mwarn=-3 -Wa,-a -DXPRJ_default=default -msummary=-psect,-class,+mem,-hex,-file -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits -std=c90 -gdwarf-3 -mstack=compiled:auto:auto
+FLAGS1    := -Wl,-Map=$(BINDIR)/$(PROJECT_NAME).map -DXPRJ_default=default -Wl,--defsym=__MPLAB_BUILD=1
+FLAGS2	  := -mwarn=-3 -Wa,-a -msummary=-psect,-class,+mem,-hex,-file -ginhx32 -Wl,--data-init -mno-keep-startup -mno-osccal -mno-resetbits -mno-save-resetbits -mno-download -mno-stackcall -mdefault-config-bits -std=c90 -gdwarf-3 -mstack=compiled:auto:auto -Wl,--memorysummary,$(BINDIR)/memoryfile.xml
 LIB       :=
-INC		  := $(patsubst %,-I%,$(subst /., ,$(wildcard $(SRCDIR)/*/.)))
+INC       := $(patsubst %,-I"%",$(subst /., ,$(wildcard $(SRCDIR)/*/.)))
+
 
 all: debug
 #debug: CFLAGS += -g
@@ -41,12 +42,8 @@ $(BINDIR):
 	
 $(BUILDDIR)/%.p1: $(SRCDIR)/%.c*
 	@mkdir -p $(dir $@)
-	@echo $(CC) -mcpu=$(CPU) -c $(CFLAGS) $(INC) $(FLAGS) -o $@ $<
 	$(CC) -mcpu=$(CPU) -c $(CFLAGS) $(INC) $(FLAGS) -o $@ $<
 	mv $(basename $@).d $(basename $@).p1.d
-	@sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-	-e '/^$$/ d' -e 's/$$/ :/' < $(@:.o=.td) >> $(@:.o=.d); 
-	@rm -f $(@:.o=.td)
 
 -include $(DEPS)
 
