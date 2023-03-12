@@ -43,7 +43,7 @@ $(BINDIR):
 $(BUILDDIR)/%.p1: $(SRCDIR)/%.c*
 	@mkdir -p $(dir $@)
 	$(CC) -mcpu=$(CPU) -c $(CFLAGS) $(INC) $(FLAGS) -o $@ $<
-	mv $(basename $@).d $(basename $@).p1.d
+	@mv $(basename $@).d $(basename $@).p1.d
 
 -include $(DEPS)
 
