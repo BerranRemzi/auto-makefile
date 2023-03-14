@@ -1,4 +1,4 @@
-PROJECT_NAME := PWM_Limiter.X.production
+PROJECT_NAME := $(notdir $(CURDIR))
 CC        := "C:/Tools/Microchip/xc8/v2.40/bin/xc8-cc.exe"
 DFP_DIR	  := "C:/Tools/Microchip/MPLABX/v6.00/packs/Microchip/PIC10-12Fxxx_DFP/1.5.61/xc8"
 CPU       := 10F322
