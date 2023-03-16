@@ -71,7 +71,7 @@ void TMR0_Initialize(void)
 
     OPTION_REGbits.PS = timer0PrescalerVal;
 
-    /* TMR0 */ 0; 
+    /* TMR0 */ 
     TMR0 = timer0ReloadVal;
 	
     /* Clearing IF flag */
