@@ -29,7 +29,7 @@ void main(void) {
     /* Initialize the state machine to the idle state */
     State_t currentState = IDLE_STATE;
 
-    uint8_t timer[TIMER_PARAM_SIZE];
+    uint8_t timer[TIMER_PARAM_SIZE] = {0, 7, 0};
     uint8_t lastTimerValue = 255;
 
     bool lastValue = LOW;
@@ -43,7 +43,7 @@ void main(void) {
                 currentState = PWM_OUTPUT_STATE;
                 Flash_Read(TIMER_FLASH_ADDRESS, timer, sizeof(timer));
 
-                Tmr_ClkDivSet(timer[TIMER_PRESCALER], TMR0);
+                Tmr_ClkDivSet(TMR0, timer[TIMER_PRESCALER]);
                 Tmr_WriteTimer(TMR0, timer[TIMER_VALUE]);
                 Tmr_Init(TMR0);
             } else {
@@ -64,7 +64,7 @@ void main(void) {
                 } else {
                     timer[TIMER_PRESCALER]--;
                 }
-                Tmr_ClkDivSet(timer[TIMER_PRESCALER], TMR0);
+                Tmr_ClkDivSet(TMR0, timer[TIMER_PRESCALER]);
                 Tmr_Reload(TMR0);
             }
             break;

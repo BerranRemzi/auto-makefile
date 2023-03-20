@@ -57,28 +57,27 @@
  */
 
 void Flash_Read(uint16_t const address, uint8_t *data, uint8_t const size) {
-    
-    /* Set up the address to read from */
-    EEADR = address;
-    
     /* Read each byte of data from the EEPROM */
     for (uint8_t i = 0; i < size; i++) {
+        /* Set up the address to read from */
+        EEADR = address + i;
+
         /* Set up the read control register */
         EECON1bits.RD = 1;
-        
+
         /* Read the data byte from the EEPROM */
         data[i] = EEDATA;
-        
+
         /* Clear the read control bit */
         EECON1bits.RD = 0;
-        
+
         /* Increment the EEPROM address */
         EEADR++;
     }
 }
 
 void FLASH_WriteWord(uint16_t flashAddr, uint16_t *ramBuf, uint16_t word) {
-    #if 0
+#if 0
     uint16_t blockStartAddr = (uint16_t) (flashAddr & ((END_FLASH - 1) ^ (ERASE_FLASH_BLOCKSIZE - 1)));
     uint8_t offset = (uint8_t) (flashAddr & (ERASE_FLASH_BLOCKSIZE - 1));
     uint8_t i;
@@ -97,43 +96,43 @@ void FLASH_WriteWord(uint16_t flashAddr, uint16_t *ramBuf, uint16_t word) {
 }
 
 void Flash_Write(uint16_t address, uint8_t const *data, uint8_t const size) {
-    
-    
     /* Wait for any previous EEPROM write to complete */
-    while (EECON1bits.WR);
-    
-    /* Set up the address to write to */
-    EEADR = address;
-    
+    while (EECON1bits.WR)
+        ;
+
     /* Write each byte of data to the EEPROM */
     for (uint8_t i = 0; i < size; i++) {
+        /* Set up the address to write to */
+        EEADR = address + i;
+
         /* Load data byte into the data buffer */
         EEDATA = data[i];
-        
+
         /* Set up the write control register */
         EECON1bits.WREN = 1;
-        
+
         /* Enable interrupts (if desired) */
         INTCONbits.GIE = 1;
-        
+
         /* Perform the write operation */
         EECON2 = 0x55;
         EECON2 = 0xAA;
         EECON1bits.WR = 1;
-        
+
         /* Disable interrupts (if enabled) */
         INTCONbits.GIE = 0;
-        
+
         /* Wait for the write operation to complete */
-        while (EECON1bits.WR);
-        
+        while (EECON1bits.WR)
+            ;
+
         /* Disable write enable after each write operation */
         EECON1bits.WREN = 0;
     }
 }
 
 void Flash_EraseBlock(uint16_t startAddr) {
-    #if 0
+#if 0
     uint8_t GIEBitValue = INTCONbits.GIE;   /* Save */ interrupt enable
 
     INTCONbits.GIE = 0; /* Disable */ interrupts

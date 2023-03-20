@@ -58,7 +58,7 @@
     extern "C" {
 #endif
 
-#define Tmr_ClkDivSet(PRESCALER, CHANNEL) OPTION_REGbits.PS = PRESCALER
+#define Tmr_ClkDivSet(CHANNEL, PRESCALER) CHANNEL##_ClkDivSet(PRESCALER)
 #define Tmr_Init(CHANNEL) CHANNEL##_Initialize()
 #define Tmr_WriteTimer(CHANNEL, VALUE) CHANNEL##_WriteTimer(VALUE)
 #define Tmr_Reload(CHANNEL) CHANNEL##_Reload()
@@ -214,6 +214,8 @@ void TMR0_Reload(void);
     </code>
 */
 bool TMR0_HasOverflowOccured(void);
+
+void TMR0_ClkDivSet(uint8_t prescaler);
 
 #ifdef __cplusplus  /* Provide C++ Compatibility */
 

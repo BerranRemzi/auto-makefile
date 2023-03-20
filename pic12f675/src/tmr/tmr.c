@@ -64,11 +64,13 @@ volatile uint8_t timer0PrescalerVal = 7u;
 
 void TMR0_Initialize(void)
 {
-    /* Set TMR0 to the options selected in the User Interface  */
-	
-    /* PSAassigned; PS 1:256; TMRSE Increment_hi_lo; mask the nWPUEN and INTEDG bits */
-    OPTION_REG = 0b00000111;  /* Prescaler1:256, TMR0 clock source is Fosc/4 */
+    /* 0 = Internal instruction cycle clock (CLKOUT) */
+    OPTION_REGbits.T0CS = 0u;
 
+    /* 0 = Prescaler is assigned to the TIMER0 module */
+    OPTION_REGbits.PSA = 0u;
+
+    /* Prescaler Rate Select bits */
     OPTION_REGbits.PS = timer0PrescalerVal;
 
     /* TMR0 */ 
@@ -82,7 +84,7 @@ void TMR0_WriteTimer(uint8_t timerVal)
 {
     timer0ReloadVal = timerVal;
     /* Write to the Timer0 register */
-    TMR0 = timer0ReloadVal;
+    TMR0 = timerVal;
 }
 
 void TMR0_Reload(void)
@@ -95,6 +97,11 @@ bool TMR0_HasOverflowOccured(void)
 {
     /* check if overflow has occurred by checking the TMRIF bit */
     return(INTCONbits.TMR0IF);
+}
+
+void TMR0_ClkDivSet(uint8_t prescaler) {
+    timer0PrescalerVal = prescaler;
+    OPTION_REGbits.PS = prescaler;
 }
 /**
   End of File
